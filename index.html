@@ -148,29 +148,6 @@ ul { list-style: none; }
   white-space: nowrap;
 }
 
-/* ---------- Livella (spirit level) ---------- */
-.level {
-  position: relative; height: 34px; width: 100%;
-  border: 1.5px solid var(--blue); border-radius: 999px;
-  background: linear-gradient(180deg, rgba(0, 20, 137, .02), rgba(0, 20, 137, .07));
-}
-.level::before, .level::after { /* tacche di centro */
-  content: ""; position: absolute; top: 6px; bottom: 6px; width: 1.5px; background: var(--blue); opacity: .7;
-}
-.level::before { left: calc(50% - 23px); }
-.level::after  { left: calc(50% + 22px); }
-.level .bubble { /* bolla sferica */
-  position: absolute; top: 50%; left: 50%; z-index: 1;
-  width: 32px; height: 32px; border-radius: 50%;
-  transform: translate(-50%, -50%);
-  background:
-    radial-gradient(circle at 34% 28%, rgba(255, 255, 255, .85) 0 12%, rgba(255, 255, 255, 0) 34%),
-    radial-gradient(circle at 50% 55%, #FF9A68 0%, var(--orange) 55%, var(--orange-600) 100%);
-  box-shadow: inset 0 -2px 4px rgba(150, 50, 0, .25), 0 2px 6px rgba(242, 106, 42, .45);
-  transition: left 1.1s cubic-bezier(.34, 1.4, .5, 1);
-}
-.level.on-dark { border-color: rgba(255, 255, 255, .55); background: rgba(255, 255, 255, .06); }
-.level.on-dark::before, .level.on-dark::after { background: var(--white); }
 
 /* ---------- Placeholder immagini ---------- */
 .media {
@@ -282,12 +259,6 @@ body.menu-open { overflow: hidden; }
 .hero .display { color: var(--white); font-size: clamp(64px, min(11.4vw, 15vh), 172px); }
 .hero-sub { max-width: 34ch; margin-top: clamp(14px, 3vh, 30px); color: rgba(255, 255, 255, .82); font-size: clamp(17px, 2.3vh, 22px); }
 .hero-actions { display: flex; flex-wrap: wrap; gap: 16px; margin-top: clamp(20px, 4.4vh, 44px); }
-.hero-level { max-width: 380px; margin-top: clamp(20px, 5.5vh, 64px); }
-.caption {
-  display: flex; justify-content: space-between; margin-top: 12px;
-  font-size: 11px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: rgba(255, 255, 255, .55);
-}
-.caption .ok { color: var(--orange); }
 
 .hero-visual { position: relative; align-self: stretch; margin-right: 22px; }
 .hero-visual .media { height: 100%; box-shadow: var(--shadow-lg); }
@@ -381,7 +352,6 @@ body.menu-open { overflow: hidden; }
 .card:hover .c-rule { transform: scaleX(1); }
 
 .club-foot { display: flex; flex-direction: column; align-items: center; gap: 40px; margin-top: 64px; }
-.club-foot .level { width: 100%; }
 .cards-hint { display: none; justify-content: center; gap: 8px; margin-top: 4px; }
 .cards-hint i { width: 8px; height: 8px; border-radius: 50%; background: rgba(0, 20, 137, .25); transition: width .3s var(--ease), background-color .3s var(--ease); }
 .cards-hint i.on { width: 24px; border-radius: 4px; background: var(--blue); }
@@ -402,7 +372,6 @@ body.menu-open { overflow: hidden; }
 .business .h2 { color: var(--white); }
 .business .ch-left p { color: var(--blue-900); }
 .business .card { border-color: transparent; box-shadow: 0 10px 30px -18px rgba(120, 40, 0, .45); }
-.business .level { border-color: var(--blue); background: rgba(255, 255, 255, .92); }
 
 /* Card in evidenza */
 .business .card.is-featured { background: var(--blue); box-shadow: 0 24px 48px -20px rgba(0, 10, 74, .6); }
@@ -525,7 +494,6 @@ body.menu-open { overflow: hidden; }
   position: relative; padding: 48px; border-radius: var(--radius-lg);
   background: var(--white); box-shadow: var(--shadow-md); border-top: 5px solid var(--blue);
 }
-#formLevel { margin-bottom: 36px; }
 .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 .field { display: flex; flex-direction: column; margin-bottom: 20px; }
 .field label, .seg-label {
@@ -648,8 +616,6 @@ body.menu-open { overflow: hidden; }
   .hero-actions { gap: 10px; }
   .hero-actions .btn { flex: 1 1 100%; height: clamp(44px, 6.6vh, 52px); }
   .hero .eyebrow { gap: 10px; font-size: 11px; letter-spacing: .1em; }
-  .hero-level { margin-top: clamp(16px, 4vh, 40px); }
-  .hero-level { max-width: none; }
   .hero-tag { left: var(--gutter); right: var(--gutter); bottom: 10px; justify-content: center; font-size: 10px; letter-spacing: .1em; }
   .hero-visual .ph { display: none; }
   .marquee-track span { height: 52px; font-size: 26px; }
@@ -677,7 +643,6 @@ body.menu-open { overflow: hidden; }
   .cards-hint { display: flex; }
   .card { min-height: 0; }
   .club-foot { flex-direction: column; align-items: stretch; gap: 28px; }
-  .club-foot .level { max-width: none; }
   .club-foot .btn { width: 100%; white-space: normal; text-align: center; height: auto; min-height: 58px; padding: 14px 20px; }
   .play-btn { width: 60px; height: 60px; }
   .play-btn svg { width: 18px; height: 22px; margin-left: 4px; }
@@ -761,10 +726,6 @@ body.menu-open { overflow: hidden; }
           <a href="#form" class="btn btn-primary btn-lg">Entra nell'ABC Club <span class="arrow">→</span></a>
           <a href="#business" class="btn btn-ghost btn-lg">Scopri i vantaggi</a>
         </div>
-        <div class="hero-level">
-          <div class="level on-dark" id="heroLevel"><span class="bubble"></span></div>
-          <div class="caption"><span>Fuori asse</span><span class="ok">● In bolla</span><span>Fuori asse</span></div>
-        </div>
       </div>
       <div class="hero-visual">
         <figure class="media">
@@ -805,7 +766,6 @@ body.menu-open { overflow: hidden; }
       </figure>
       <div class="intro-badge">
         <div class="h4">Tutto in equilibrio</div>
-        <div class="level" id="introLevel"><span class="bubble"></span></div>
         <div class="meta">QUALITÀ · DISPONIBILITÀ · SERVIZIO</div>
       </div>
     </div>
@@ -869,7 +829,6 @@ body.menu-open { overflow: hidden; }
     </div>
 
     <div class="club-foot reveal">
-      <div class="level"><span class="bubble"></span></div>
       <a href="#form" class="btn btn-dark btn-lg">Entra nell'ABC Business Club <span class="arrow">→</span></a>
     </div>
   </div>
@@ -934,7 +893,6 @@ body.menu-open { overflow: hidden; }
     </div>
 
     <div class="club-foot reveal">
-      <div class="level on-dark"><span class="bubble"></span></div>
       <a href="#form" class="btn btn-primary btn-lg">Entra nell'ABC Pro Club <span class="arrow">→</span></a>
     </div>
   </div>
@@ -1009,7 +967,6 @@ body.menu-open { overflow: hidden; }
     </div>
     <div class="form-card reveal">
       <form id="clubForm" novalidate>
-        <div class="level" id="formLevel"><span class="bubble"></span></div>
         <div class="form-row">
           <div class="field"><label for="f-nome">Nome</label><input id="f-nome" name="nome" placeholder="Mario" autocomplete="given-name" required><span class="msg">Inserisci il nome</span></div>
           <div class="field"><label for="f-cognome">Cognome</label><input id="f-cognome" name="cognome" placeholder="Rossi" autocomplete="family-name" required><span class="msg">Inserisci il cognome</span></div>
@@ -1133,20 +1090,6 @@ function setupMarquee(){
 let marqueeT;
 window.addEventListener('resize', () => { clearTimeout(marqueeT); marqueeT = setTimeout(setupMarquee, 200); });
 
-/* ---- Livella: la bolla si sposta e torna in centro ---- */
-function settleLevel(level){
-  const bubble = level.querySelector('.bubble');
-  if(!bubble) return;
-  bubble.style.left = (38 + Math.random()*24) + '%';
-  setTimeout(()=> bubble.style.left = '50%', 120);
-}
-function nudge(level){
-  const bubble = level.querySelector('.bubble');
-  if(!bubble) return;
-  const back = bubble.style.left || '50%';
-  bubble.style.left = (44 + Math.random()*12) + '%';
-  setTimeout(()=> bubble.style.left = back, 700);
-}
 
 /* ---- Contatori ---- */
 const counted = new WeakSet();
@@ -1170,16 +1113,12 @@ const io = new IntersectionObserver((entries)=>{
   entries.forEach(en=>{
     if(!en.isIntersecting) return;
     en.target.classList.add('in');
-    en.target.querySelectorAll('.level').forEach(settleLevel);
     en.target.querySelectorAll('.num[data-count]').forEach(animateCount);
     io.unobserve(en.target);
   });
 },{ threshold: 0.18 });
 document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
 
-window.addEventListener('load', ()=>{
-  setTimeout(()=>settleLevel(document.getElementById('heroLevel')), 400);
-});
 
 /* ---- Form: segmented control ---- */
 const segment = document.getElementById('segment');
@@ -1190,13 +1129,11 @@ segment.querySelectorAll('button').forEach((b,i)=>{
     b.classList.add('active'); b.setAttribute('aria-pressed','true');
     segment.classList.toggle('r1', i === 1);
     userType = b.dataset.val;
-    nudge(document.getElementById('formLevel'));
   });
 });
 
-/* ---- Form: validazione con feedback "in bolla" ---- */
+/* ---- Form: validazione ---- */
 const form = document.getElementById('clubForm');
-const formLevel = document.getElementById('formLevel');
 function validField(input){
   const v = input.value.trim();
   if(input.type === 'email') return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
@@ -1216,8 +1153,7 @@ form.addEventListener('submit', (e)=>{
     input.closest('.field').classList.toggle('err', !valid);
     if(!valid) ok = false;
   });
-  if(!ok){ nudge(formLevel); return; }
-  formLevel.querySelector('.bubble').style.left = '50%';
+  if(!ok) return;
   setTimeout(()=>{
     form.style.display = 'none';
     document.getElementById('formSuccess').classList.add('show');
