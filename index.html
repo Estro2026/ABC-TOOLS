@@ -266,9 +266,15 @@ body.menu-open { overflow: hidden; }
 }
 .hero-grid {
   position: relative; width: 100%;
-  min-height: calc(100vh - var(--nav-h) - var(--marquee-h));
+  min-height: calc(100vh - var(--nav-h) - var(--marquee-h));   /* fallback CSS-only */
   min-height: calc(100svh - var(--nav-h) - var(--marquee-h));
   min-height: calc(100dvh - var(--nav-h) - var(--marquee-h));
+  /* --hero-fill: misurata via JS sull'altezza reale di nav e banda (vedi
+     script in fondo) — su alcuni schermi/risoluzioni con scaling frazionario
+     i px assunti in --nav-h/--marquee-h e quelli davvero renderizzati
+     divergono di qualche pixel, lasciando hero+banda sotto il 100% della
+     viewport; qui si sostituisce il calcolo fisso con quello osservato */
+  min-height: var(--hero-fill, calc(100dvh - var(--nav-h) - var(--marquee-h)));
   display: grid; grid-template-columns: 1.08fr .92fr; gap: clamp(28px, 5vw, 72px); align-items: center;
   padding: clamp(20px, 5vh, 80px) 0 clamp(28px, 6vh, 88px);
 }
@@ -625,15 +631,7 @@ body.menu-open { overflow: hidden; }
   .hero-visual .ph svg { width: 20px; height: 20px; }
   .hero-spec { display: none; }
   .hero-tag { left: auto; right: var(--gutter); bottom: 20px; padding: 10px 14px; font-size: 11px; }
-  /* colonna singola: il testo e le CTA si centrano invece di restare
-     appesi in alto con un vuoto sopra il tag flottante sulla foto */
-  .hero-copy { text-align: center; }
-  .hero-actions { justify-content: center; }
-  /* colonna singola: la foto occupa tutta la larghezza, allineata al testo
-     sopra (niente più tetto a 640px che la lasciava a sinistra, staccata dal
-     resto); l'aspect-ratio verticale del desktop però la renderebbe enorme
-     alla larghezza piena, quindi qui diventa un banner più basso */
-  .intro-visual .media, .catalog-visual .media { aspect-ratio: 16 / 9; }
+  .intro-visual, .catalog-visual { max-width: 640px; }
   .intro-badge { left: 24px; }
   .catalog-visual::after { display: none; }
   .cards { grid-template-columns: repeat(2, 1fr); }
@@ -663,6 +661,12 @@ body.menu-open { overflow: hidden; }
   .stat:last-child { border-bottom: 2px solid var(--blue); }
   .stat .num { font-size: 38px; }
   .stat .lab { margin-top: 0; }
+  /* qui (non in tablet) il tetto di larghezza andrebbe tolto: a schermo
+     stretto lasciava la foto piccola e staccata dal testo sopra. Piena
+     larghezza, centrata, e un banner più basso del ritaglio verticale
+     da desktop (altrimenti enorme una volta allargata) */
+  .intro-visual, .catalog-visual { max-width: none; }
+  .intro-visual .media, .catalog-visual .media { aspect-ratio: 16 / 9; }
   .intro-visual { padding-bottom: 0; }
   .intro-badge { position: relative; left: auto; width: auto; margin: -40px 16px 0; }
   .club-head { flex-direction: column; align-items: flex-start; gap: 24px; margin-bottom: 40px; }
@@ -723,7 +727,7 @@ body.menu-open { overflow: hidden; }
   .intro-visual .media > img, .catalog-visual .media > img, .player .media > img {
     position: absolute; inset: 0;
   }
-  @media (max-width: 1024px) {
+  @media (max-width: 720px) {
     .intro-visual .media, .catalog-visual .media { padding-top: 56.25%; } /* segue il 16/9 a piena larghezza */
   }
 }
@@ -1097,6 +1101,26 @@ body.menu-open { overflow: hidden; }
 const nav = document.getElementById('nav');
 const onScroll = () => nav.classList.toggle('scrolled', window.scrollY > 8);
 window.addEventListener('scroll', onScroll, { passive: true }); onScroll();
+
+/* ---- Hero: altezza esatta della viewport misurata, non assunta ----
+   --nav-h/--marquee-h sono stime fisse; su alcuni schermi (scaling non
+   intero, zoom, barra del browser) l'altezza vera renderizzata di nav e
+   banda si scosta di qualche pixel, lasciando hero+banda sotto il 100%
+   della viewport. Qui si misurano i due elementi reali e si passa il
+   valore osservato a --hero-fill, che l'hero-grid usa al posto del
+   calcolo fisso quando disponibile. */
+const heroMarquee = document.querySelector('.hero-marquee');
+function setHeroFill(){
+  const navH = nav.getBoundingClientRect().height;
+  const marqueeH = heroMarquee.getBoundingClientRect().height;
+  const fill = window.innerHeight - navH - marqueeH;
+  document.documentElement.style.setProperty('--hero-fill', fill + 'px');
+}
+setHeroFill();
+window.addEventListener('resize', setHeroFill);
+window.addEventListener('orientationchange', setHeroFill);
+(document.fonts ? document.fonts.ready : Promise.resolve()).then(setHeroFill); // il logo/i font caricati dopo possono cambiare l'altezza della nav
+if (window.visualViewport) window.visualViewport.addEventListener('resize', setHeroFill); // barra indirizzi mobile che compare/sparisce
 
 /* ---- Menu mobile ---- */
 const navToggle = document.getElementById('navToggle');
