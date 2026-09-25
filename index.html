@@ -664,13 +664,16 @@ body.menu-open { overflow: hidden; }
   .stat .lab { margin-top: 0; }
   /* qui (non in tablet) il tetto di larghezza andrebbe tolto: a schermo
      stretto lasciava la foto piccola e staccata dal testo sopra. Piena
-     larghezza, centrata, e un banner più basso del ritaglio verticale da
-     desktop (altrimenti enorme una volta allargata) — ma non basso quanto
-     un 16/9, che a piena larghezza risultava troppo schiacciato */
+     larghezza, centrata, e più alta del 4/3 di prima: gli elementi che ci
+     stanno sopra (badge, barra del catalogo) coprivano troppo il soggetto
+     in proporzione a un'immagine così bassa — ma non alta quanto il
+     ritaglio verticale da desktop, che a piena larghezza era enorme */
   .intro-visual, .catalog-visual { max-width: none; }
-  .intro-visual .media, .catalog-visual .media { aspect-ratio: 4 / 3; }
+  .intro-visual .media, .catalog-visual .media { aspect-ratio: 1 / 1; }
   .intro-visual { padding-bottom: 0; }
-  .intro-badge { position: relative; left: auto; width: auto; margin: -40px 16px 0; }
+  /* più compatto: copriva quasi un terzo della foto, ora molto meno */
+  .intro-badge { position: relative; left: auto; width: auto; margin: -28px 16px 0; padding: 16px 20px; }
+  .intro-badge .h4 { font-size: 24px; margin-bottom: 8px; }
   .club-head { flex-direction: column; align-items: flex-start; gap: 24px; margin-bottom: 40px; }
   /* card a scorrimento orizzontale (swipe) */
   .cards {
@@ -695,7 +698,9 @@ body.menu-open { overflow: hidden; }
   .player-meta { left: 12px; right: 12px; bottom: 22px; font-size: 9px; letter-spacing: .06em; }
   .player-progress { left: 12px; right: 12px; bottom: 12px; height: 3px; }
   .cat-index { grid-template-columns: 1fr; }
-  .cat-spec { left: 12px; right: 12px; bottom: 12px; font-size: 10px; letter-spacing: .08em; }
+  /* compatta, in un angolo: da barra larga quasi quanto la foto a etichetta,
+     così copre molto meno del soggetto (utensili in basso nello scatto) */
+  .cat-spec { left: 12px; right: auto; bottom: 12px; padding: 8px 12px; font-size: 9px; letter-spacing: .06em; }
   .form-card { padding: 28px 20px; }
   .form-row { grid-template-columns: 1fr; gap: 0; }
   .footer { padding-top: 72px; }
@@ -730,7 +735,7 @@ body.menu-open { overflow: hidden; }
     position: absolute; inset: 0;
   }
   @media (max-width: 720px) {
-    .intro-visual .media, .catalog-visual .media { padding-top: 75%; } /* segue il 4/3 a piena larghezza */
+    .intro-visual .media, .catalog-visual .media { padding-top: 100%; } /* segue l'1/1 a piena larghezza */
   }
 }
 </style>
