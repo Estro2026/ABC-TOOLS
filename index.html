@@ -245,13 +245,17 @@ body.menu-open { overflow: hidden; }
 /* ================================================================
    HERO
    ================================================================ */
-/* Hero + banda occupano esattamente la viewport sotto la nav */
+/* Hero + banda occupano il 100% della viewport sotto la nav: min-height (non
+   height) fa da pavimento a cui il contenuto si allunga in flex-grow, ma se
+   a zoom molto alti il contenuto ha bisogno di più spazio di quanto gliene
+   dia una viewport così bassa, la sezione cresce oltre quel pavimento invece
+   di tagliare o sovrapporre l'immagine e i box — non serve overflow:hidden
+   per contenerla, resta solo per le strisce decorative fuori campo. */
 .hero {
   position: relative; overflow: hidden;
   display: flex; flex-direction: column;
-  height: calc(100vh - var(--nav-h));
-  height: calc(100svh - var(--nav-h));
-  min-height: 560px;
+  min-height: calc(100vh - var(--nav-h));
+  min-height: calc(100svh - var(--nav-h));
   background: var(--blue); color: var(--white);
 }
 .hero > .wrap { flex: 1 1 auto; min-height: 0; display: flex; }
@@ -264,16 +268,19 @@ body.menu-open { overflow: hidden; }
 .hero-grid {
   position: relative;
   flex: 1 1 auto; min-height: 0; width: 100%;
-  display: grid; grid-template-columns: 1.08fr .92fr; gap: 72px; align-items: center;
-  padding: clamp(28px, 6vh, 80px) 0 clamp(36px, 7vh, 88px);
+  display: grid; grid-template-columns: 1.08fr .92fr; gap: clamp(28px, 5vw, 72px); align-items: center;
+  padding: clamp(20px, 5vh, 80px) 0 clamp(28px, 6vh, 88px);
 }
-.hero .eyebrow { color: var(--orange); margin-bottom: clamp(14px, 2.6vh, 24px); }
-.hero .display { color: var(--white); font-size: clamp(64px, min(11.4vw, 15vh), 172px); }
-.hero-sub { max-width: 34ch; margin-top: clamp(14px, 3vh, 30px); color: rgba(255, 255, 255, .82); font-size: clamp(17px, 2.3vh, 22px); }
-.hero-actions { display: flex; flex-wrap: wrap; gap: 16px; margin-top: clamp(20px, 4.4vh, 44px); }
+.hero .eyebrow { color: var(--orange); margin-bottom: clamp(10px, 2.2vh, 24px); }
+.hero .display { color: var(--white); font-size: clamp(48px, min(11.4vw, 12.5vh), 172px); }
+.hero-sub { max-width: 34ch; margin-top: clamp(10px, 2.4vh, 30px); color: rgba(255, 255, 255, .82); font-size: clamp(16px, 2vh, 22px); }
+.hero-actions { display: flex; flex-wrap: wrap; gap: 16px; margin-top: clamp(14px, 3.6vh, 44px); }
 
-.hero-visual { position: relative; align-self: stretch; margin-right: 22px; }
-.hero-visual .media { height: 100%; box-shadow: var(--shadow-lg); }
+/* L'immagine e i box che le stanno intorno non devono mai essere tagliati:
+   niente overflow:hidden qui, e min-height:0 le lascia comprimersi finché
+   il testo a fianco lo richiede, prima di eccedere l'altezza della hero. */
+.hero-visual { position: relative; align-self: stretch; min-height: 0; margin-right: 22px; }
+.hero-visual .media { height: 100%; min-height: 0; box-shadow: var(--shadow-lg); }
 .hero-visual .media { background:
     repeating-linear-gradient(135deg, rgba(255, 255, 255, .05) 0 2px, transparent 2px 22px),
     linear-gradient(160deg, #2A3FB5 0%, #0A1F96 50%, var(--blue-900) 100%); }
@@ -628,11 +635,10 @@ body.menu-open { overflow: hidden; }
   .logo { height: 36px; }
   .nav-cta .btn { height: 44px; padding: 0 14px; font-size: 12px; letter-spacing: .04em; }
   .nav-cta .btn .arrow { display: none; }
-  .hero { min-height: 520px; }
   .hero-visual { bottom: 52px; }
-  .hero-grid { align-content: start; padding: clamp(20px, 4vh, 48px) 0 72px; }
-  .hero .display { font-size: clamp(56px, min(19vw, 10.5vh), 92px); }
-  .hero-sub { font-size: 17px; }
+  .hero-grid { align-content: start; padding: clamp(16px, 4vh, 48px) 0 72px; }
+  .hero .display { font-size: clamp(44px, min(19vw, 9.5vh), 92px); }
+  .hero-sub { font-size: clamp(15px, 2vh, 17px); }
   .hero-actions { gap: 10px; }
   .hero-actions .btn { flex: 1 1 100%; height: clamp(44px, 6.6vh, 52px); }
   .hero .eyebrow { gap: 10px; font-size: 11px; letter-spacing: .1em; }
