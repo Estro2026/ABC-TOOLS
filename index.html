@@ -2,7 +2,9 @@
 <html lang="it">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#001489">
+<meta name="color-scheme" content="light">
 <title>ABC Tools — Entra nell'ABC Club</title>
 <!--
   ABC Club — Landing page · Mockup UI
@@ -70,7 +72,11 @@
    BASE
    ================================================================ */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; scroll-padding-top: var(--nav-h); -webkit-text-size-adjust: 100%; }
+html {
+  scroll-behavior: smooth; scroll-padding-top: var(--nav-h);
+  text-size-adjust: 100%; -webkit-text-size-adjust: 100%; -moz-text-size-adjust: 100%;
+  scrollbar-gutter: stable; /* niente scatto orizzontale quando compare/sparisce la scrollbar */
+}
 body {
   font-family: var(--sans);
   font-size: 17px;
@@ -79,14 +85,19 @@ body {
   background: var(--white);
   -webkit-font-smoothing: antialiased;
   font-synthesis: none;
-  overflow-x: hidden;
+  overflow-x: hidden; overflow-y: visible; /* esplicito: alcuni motori impostano l'asse non specificato su auto */
+  min-height: 100vh; min-height: 100svh;
 }
 a { color: inherit; text-decoration: none; }
 button, input { font: inherit; color: inherit; }
 img, svg { display: block; max-width: 100%; }
 ul { list-style: none; }
 
-.wrap { width: 100%; max-width: calc(var(--wrap) + var(--gutter) * 2); margin: 0 auto; padding: 0 var(--gutter); }
+.wrap {
+  width: 100%; max-width: calc(var(--wrap) + var(--gutter) * 2); margin: 0 auto;
+  /* padding laterale + area sicura (notch/angoli arrotondati in landscape) */
+  padding: 0 max(var(--gutter), env(safe-area-inset-right, 0px)) 0 max(var(--gutter), env(safe-area-inset-left, 0px));
+}
 .section { padding: var(--section-y) 0; position: relative; }
 
 /* ---------- Tipografia ---------- */
@@ -176,6 +187,7 @@ ul { list-style: none; }
 .nav {
   position: sticky; top: 0; z-index: 50;
   background: rgba(255, 255, 255, .97);
+  -webkit-backdrop-filter: saturate(1.4) blur(10px); /* Safari richiede il prefisso */
   backdrop-filter: saturate(1.4) blur(10px);
   transition: box-shadow .25s var(--ease);
 }
@@ -218,7 +230,7 @@ ul { list-style: none; }
   position: absolute; left: 0; right: 0; top: 100%;
   max-height: calc(100vh - var(--nav-h)); overflow-y: auto;
   background: var(--white); border-top: 1px solid var(--line); box-shadow: 0 24px 40px -20px rgba(0, 10, 74, .35);
-  padding: 8px 0 28px;
+  padding: 8px 0 max(28px, env(safe-area-inset-bottom, 0px));
 }
 .mobile-menu ul a {
   display: flex; align-items: center; justify-content: space-between; min-height: 60px;
@@ -508,6 +520,14 @@ body.menu-open { overflow: hidden; }
 .field input::placeholder { color: #A3A7C0; }
 .field input:hover { border-color: #B9BED6; }
 .field input:focus { border-color: var(--blue); box-shadow: 0 0 0 4px rgba(0, 20, 137, .12); }
+/* Chrome/Safari: lo sfondo giallo dell'autofill non deve rompere lo stile del campo */
+.field input:-webkit-autofill,
+.field input:-webkit-autofill:hover,
+.field input:-webkit-autofill:focus {
+  -webkit-text-fill-color: var(--ink);
+  -webkit-box-shadow: 0 0 0 1000px var(--white) inset;
+  transition: background-color 9999s ease-in-out 0s;
+}
 .field input.valid {
   border-color: var(--blue); padding-right: 44px;
   background: var(--white) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%23F26A2A' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6L9 17l-5-5'/%3E%3C/svg%3E") no-repeat right 16px center;
@@ -550,7 +570,7 @@ body.menu-open { overflow: hidden; }
 /* ================================================================
    FOOTER
    ================================================================ */
-.footer { background: var(--blue); color: rgba(255, 255, 255, .78); padding: 96px 0 36px; }
+.footer { background: var(--blue); color: rgba(255, 255, 255, .78); padding: 96px 0 max(36px, env(safe-area-inset-bottom, 0px)); }
 .footer-top { display: grid; grid-template-columns: 1.6fr 1fr 1fr; gap: 56px; padding-bottom: 64px; border-bottom: 1px solid rgba(255, 255, 255, .16); }
 .footer .logo { height: 58px; }
 .blurb { margin-top: 24px; max-width: 38ch; font-size: 15px; line-height: 1.65; }
@@ -672,6 +692,19 @@ body.menu-open { overflow: hidden; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
   .reveal { opacity: 1; transform: none; }
+}
+
+/* ================================================================
+   FALLBACK per browser senza `aspect-ratio` (es. Safari < 15)
+   ================================================================ */
+@supports not (aspect-ratio: 1 / 1) {
+  .intro-visual .media, .catalog-visual .media, .player .media { aspect-ratio: none; height: 0; }
+  .intro-visual .media { padding-top: 88%; }   /* 5/4.4 */
+  .catalog-visual .media { padding-top: 120%; } /* 4/4.8 */
+  .player .media { padding-top: 56.25%; }        /* 16/9 */
+  .intro-visual .media > img, .catalog-visual .media > img, .player .media > img {
+    position: absolute; inset: 0;
+  }
 }
 </style>
 </head>
