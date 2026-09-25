@@ -624,9 +624,10 @@ body.menu-open { overflow: hidden; }
   .hero-visual::before { display: none; }
   .hero-visual .media { border-radius: 0; box-shadow: none; }
   .hero-visual .media::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0, 20, 137, .55) 0%, rgba(0, 20, 137, .88) 55%, var(--blue) 100%); }
-  /* la foto piena larghezza taglia parecchio in verticale: ancorata verso
-     l'alto per tenere il soggetto in vista invece del solo banco di lavoro */
-  .hero-visual .media img { object-position: 50% 15%; }
+  /* la foto piena larghezza taglia parecchio in verticale: ancorata in cima
+     per tenere il volto in vista (verificato ritagliando la foto vera a
+     varie percentuali — oltre il 15-20% il viso esce già dall'inquadratura) */
+  .hero-visual .media img { object-position: 50% 0%; }
   .hero-visual .ph { justify-content: flex-start; align-items: flex-end; flex-direction: row; gap: 10px; padding: 20px var(--gutter); font-size: 11px; opacity: .6; }
   .hero-visual .ph svg { width: 20px; height: 20px; }
   .hero-spec { display: none; }
@@ -663,10 +664,11 @@ body.menu-open { overflow: hidden; }
   .stat .lab { margin-top: 0; }
   /* qui (non in tablet) il tetto di larghezza andrebbe tolto: a schermo
      stretto lasciava la foto piccola e staccata dal testo sopra. Piena
-     larghezza, centrata, e un banner più basso del ritaglio verticale
-     da desktop (altrimenti enorme una volta allargata) */
+     larghezza, centrata, e un banner più basso del ritaglio verticale da
+     desktop (altrimenti enorme una volta allargata) — ma non basso quanto
+     un 16/9, che a piena larghezza risultava troppo schiacciato */
   .intro-visual, .catalog-visual { max-width: none; }
-  .intro-visual .media, .catalog-visual .media { aspect-ratio: 16 / 9; }
+  .intro-visual .media, .catalog-visual .media { aspect-ratio: 4 / 3; }
   .intro-visual { padding-bottom: 0; }
   .intro-badge { position: relative; left: auto; width: auto; margin: -40px 16px 0; }
   .club-head { flex-direction: column; align-items: flex-start; gap: 24px; margin-bottom: 40px; }
@@ -728,7 +730,7 @@ body.menu-open { overflow: hidden; }
     position: absolute; inset: 0;
   }
   @media (max-width: 720px) {
-    .intro-visual .media, .catalog-visual .media { padding-top: 56.25%; } /* segue il 16/9 a piena larghezza */
+    .intro-visual .media, .catalog-visual .media { padding-top: 75%; } /* segue il 4/3 a piena larghezza */
   }
 }
 </style>
