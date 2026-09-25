@@ -303,6 +303,10 @@ body.menu-open { overflow: hidden; }
   font-size: 12px; font-weight: 700; letter-spacing: .14em;
 }
 .hero-tag .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--orange); box-shadow: 0 0 0 4px var(--orange-100); }
+/* Gemello nel flusso: annulla il position:absolute di .hero-tag (altrimenti
+   resta ancorato al bordo di .hero-copy invece di seguire le CTA) — nascosto
+   finché la foto resta a fianco del testo (>1024px) */
+.hero-tag-inline { position: static; left: auto; bottom: auto; display: none; }
 
 /* Marquee */
 .hero-marquee { position: relative; background: var(--orange); overflow: hidden; }
@@ -621,8 +625,12 @@ body.menu-open { overflow: hidden; }
   .hero-visual .ph { justify-content: flex-start; align-items: flex-end; flex-direction: row; gap: 10px; padding: 20px var(--gutter); font-size: 11px; opacity: .6; }
   .hero-visual .ph svg { width: 20px; height: 20px; }
   .hero-spec { display: none; }
-  .hero-tag { left: auto; right: var(--gutter); bottom: 20px; padding: 10px 14px; font-size: 11px; }
-  .intro-visual, .catalog-visual { max-width: 640px; }
+  /* Il tag flottante sulla foto lascerebbe un vuoto enorme tra le CTA e sé
+     stesso (la hero è alta quanto lo schermo, il testo no): sparisce e resta
+     solo il gemello nel flusso, subito sotto le CTA */
+  .hero-tag { display: none; }
+  .hero-tag-inline { display: inline-flex; margin-top: clamp(20px, 4vh, 40px); }
+  /* colonna singola: la foto occupa tutta la larghezza, allineata al testo sopra (niente più tetto a 640px che la lasciava a sinistra, staccata dal resto) */
   .intro-badge { left: 24px; }
   .catalog-visual::after { display: none; }
   .cards { grid-template-columns: repeat(2, 1fr); }
@@ -643,7 +651,7 @@ body.menu-open { overflow: hidden; }
   .hero-actions { gap: 10px; }
   .hero-actions .btn { flex: 1 1 100%; height: clamp(44px, 6.6vh, 52px); }
   .hero .eyebrow { gap: 10px; font-size: 11px; letter-spacing: .1em; }
-  .hero-tag { left: var(--gutter); right: var(--gutter); bottom: 10px; justify-content: center; font-size: 10px; letter-spacing: .1em; }
+  .hero-tag-inline { margin-top: clamp(14px, 3vh, 24px); font-size: 10px; letter-spacing: .1em; }
   .hero-visual .ph { display: none; }
   .marquee-track span { height: 52px; font-size: 26px; }
   .lead { font-size: 18px; }
@@ -766,6 +774,9 @@ body.menu-open { overflow: hidden; }
           <a href="#form" class="btn btn-primary btn-lg">Entra nell'ABC Club <span class="arrow">→</span></a>
           <a href="#business" class="btn btn-ghost btn-lg">Scopri i vantaggi</a>
         </div>
+        <!-- ≤1024px: la foto diventa sfondo e il tag flottante sparisce (vedi .hero-tag),
+             questo gemello resta nel flusso subito sotto le CTA, senza il vuoto in mezzo -->
+        <div class="hero-tag hero-tag-inline"><span class="dot"></span> PRECISIONE · EQUILIBRIO · ALLINEAMENTO</div>
       </div>
       <div class="hero-visual">
         <figure class="media">
