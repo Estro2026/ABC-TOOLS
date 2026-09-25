@@ -13,7 +13,9 @@
     - Logo:  VI/Logo/webp/ABCToolsLogoDark.webp (su fondi chiari) · ABCToolsLogoLight.webp (su fondi scuri)
              ritagliati via CSS (.logo) sull'area del marchio — il file va tenuto insieme alla cartella VI
     - Font:  VI/Font/SteelfishRg-Regular.ttf (titoli) · VI/Font/Arial/*.ttf (testo)
-  Le immagini sono placeholder (.media) da sostituire con <img> mantenendo il contenitore.
+    - Foto:  VI/img/operaio.webp (hero) · chiaveinglese.webp (chi siamo) · catalogo.webp (catalogo)
+             il video di ABC Stories è su YouTube (id in data-yt su #player), non un file locale
+  Il file HTML va sempre tenuto insieme alla cartella VI/ (loghi, font, foto).
 -->
 <style>
 /* ================================================================
@@ -161,7 +163,9 @@ ul { list-style: none; }
 }
 
 
-/* ---------- Placeholder immagini ---------- */
+/* ---------- Contenitore foto ---------- */
+/* Il gradiente resta visibile finché l'<img> non ha finito di caricare
+   (o come fallback se src non risolve) */
 .media {
   position: relative; overflow: hidden; border-radius: var(--radius-lg);
   background:
@@ -170,13 +174,6 @@ ul { list-style: none; }
   color: rgba(255, 255, 255, .78);
 }
 .media > img { width: 100%; height: 100%; object-fit: cover; }
-.media .ph {
-  position: absolute; inset: 0;
-  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px;
-  padding: 32px; text-align: center;
-  font-size: 13px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; line-height: 1.5;
-}
-.media .ph svg { width: 44px; height: 44px; opacity: .7; }
 
 /* ---------- Reveal ---------- */
 .reveal { opacity: 0; transform: translateY(24px); transition: opacity .8s var(--ease), transform .8s var(--ease); }
@@ -628,8 +625,6 @@ body.menu-open { overflow: hidden; }
      per tenere il volto in vista (verificato ritagliando la foto vera a
      varie percentuali — oltre il 15-20% il viso esce già dall'inquadratura) */
   .hero-visual .media img { object-position: 50% 0%; }
-  .hero-visual .ph { justify-content: flex-start; align-items: flex-end; flex-direction: row; gap: 10px; padding: 20px var(--gutter); font-size: 11px; opacity: .6; }
-  .hero-visual .ph svg { width: 20px; height: 20px; }
   .hero-spec { display: none; }
   .hero-tag { left: auto; right: var(--gutter); bottom: 20px; padding: 10px 14px; font-size: 11px; }
   .intro-visual, .catalog-visual { max-width: 640px; }
@@ -654,7 +649,6 @@ body.menu-open { overflow: hidden; }
   .hero-actions .btn { flex: 1 1 100%; height: clamp(44px, 6.6vh, 52px); }
   .hero .eyebrow { gap: 10px; font-size: 11px; letter-spacing: .1em; }
   .hero-tag { left: var(--gutter); right: var(--gutter); bottom: 10px; justify-content: center; font-size: 10px; letter-spacing: .1em; }
-  .hero-visual .ph { display: none; }
   .marquee-track span { font-size: 26px; } /* height segue --marquee-h, ridefinito sopra */
   .lead { font-size: 18px; }
   .stats { grid-template-columns: 1fr; gap: 0; margin-top: 40px; }
@@ -780,7 +774,7 @@ body.menu-open { overflow: hidden; }
 
 <main>
 <!-- ============ HERO ============ -->
-<section class="hero" data-screen-label="Hero">
+<section class="hero">
   <div class="wrap">
     <div class="hero-grid">
       <div class="hero-copy">
@@ -813,7 +807,7 @@ body.menu-open { overflow: hidden; }
 </section>
 
 <!-- ============ INTRO ============ -->
-<section class="section" data-screen-label="Intro">
+<section class="section">
   <div class="wrap intro-grid">
     <div class="intro-copy reveal">
       <span class="eyebrow"><span class="tick"></span> Chi siamo</span>
@@ -838,7 +832,7 @@ body.menu-open { overflow: hidden; }
 </section>
 
 <!-- ============ BUSINESS CLUB ============ -->
-<section class="section business" id="business" data-screen-label="Business Club">
+<section class="section business" id="business">
   <div class="wrap">
     <div class="club-head">
       <div class="ch-left reveal">
@@ -900,7 +894,7 @@ body.menu-open { overflow: hidden; }
 </section>
 
 <!-- ============ PRO CLUB ============ -->
-<section class="section pro" id="pro" data-screen-label="Pro Club">
+<section class="section pro" id="pro">
   <div class="wrap">
     <div class="club-head">
       <div class="ch-left reveal on-dark">
@@ -964,7 +958,7 @@ body.menu-open { overflow: hidden; }
 </section>
 
 <!-- ============ VIDEO ============ -->
-<section class="section video" id="video" data-screen-label="Video">
+<section class="section video" id="video">
   <div class="wrap">
     <div class="video-head reveal on-dark">
       <span class="eyebrow"><span class="tick"></span> ABC Stories</span>
@@ -987,7 +981,7 @@ body.menu-open { overflow: hidden; }
 </section>
 
 <!-- ============ CATALOGO ============ -->
-<section class="section" id="catalogo" data-screen-label="Catalogo">
+<section class="section" id="catalogo">
   <div class="wrap catalog-grid">
     <div class="catalog-copy reveal">
       <span class="eyebrow"><span class="tick"></span> Il Catalogo ABC</span>
@@ -1018,7 +1012,7 @@ body.menu-open { overflow: hidden; }
 </section>
 
 <!-- ============ FORM ============ -->
-<section class="section form-sec" id="form" data-screen-label="Form">
+<section class="section form-sec" id="form">
   <div class="wrap form-grid">
     <div class="form-copy reveal">
       <span class="eyebrow"><span class="tick"></span> Iscrizione</span>
