@@ -565,6 +565,28 @@ body.menu-open { overflow: hidden; }
 }
 .segment button.active { color: var(--white); }
 .segment button:focus-visible { outline: 2px solid var(--orange); outline-offset: -2px; border-radius: 3px; }
+/* Campi obbligatori: asterisco arancio accanto all'etichetta */
+.field label::after, .seg-label::after { content: " *"; color: var(--orange); }
+
+/* Consenso privacy: checkbox nativa nascosta ma accessibile, riquadro disegnato */
+.consent { margin: -8px 0 24px; }
+.consent-row { position: relative; display: flex; align-items: flex-start; gap: 12px; cursor: pointer; }
+.consent-row input { position: absolute; opacity: 0; width: 22px; height: 22px; margin: 0; cursor: pointer; }
+.consent-box {
+  flex: none; display: grid; place-items: center; width: 22px; height: 22px; margin-top: 1px;
+  border: 1.5px solid var(--line); border-radius: var(--radius); background: var(--white); color: transparent;
+  transition: background-color .2s var(--ease), border-color .2s var(--ease), color .2s var(--ease), box-shadow .2s var(--ease);
+}
+.consent-box svg { width: 14px; height: 14px; }
+.consent-row:hover .consent-box { border-color: #B9BED6; }
+.consent-row input:checked + .consent-box { background: var(--orange); border-color: var(--orange); color: var(--white); }
+.consent-row input:focus-visible + .consent-box { box-shadow: 0 0 0 4px rgba(0, 20, 137, .18); border-color: var(--blue); }
+.consent-text { font-size: 14px; line-height: 1.5; color: var(--ink-2); }
+.consent-text a { color: var(--blue); font-weight: 700; text-decoration: underline; text-underline-offset: 2px; }
+.consent-text a:hover { color: var(--orange); }
+.consent .msg { display: none; margin: 8px 0 0 34px; font-size: 13px; font-weight: 700; color: var(--error); }
+.consent.err .consent-box { border-color: var(--error); box-shadow: 0 0 0 4px rgba(200, 49, 43, .1); }
+.consent.err .msg { display: block; }
 #clubForm .btn-primary { width: 100%; }
 .form-fine { margin-top: 16px; font-size: 13px; line-height: 1.5; color: var(--ink-3); text-align: center; }
 
@@ -1031,15 +1053,26 @@ body.menu-open { overflow: hidden; }
           <div class="field"><label for="f-cognome">Cognome</label><input id="f-cognome" name="cognome" placeholder="Rossi" autocomplete="family-name" required><span class="msg">Inserisci il cognome</span></div>
         </div>
         <div class="field"><label for="f-email">Email</label><input id="f-email" name="email" type="email" placeholder="mario.rossi@azienda.it" autocomplete="email" required><span class="msg">Inserisci un'email valida</span></div>
-        <div class="field"><label for="f-azienda">Azienda</label><input id="f-azienda" name="azienda" placeholder="Ragione sociale" autocomplete="organization" required><span class="msg">Inserisci l'azienda</span></div>
+        <div class="form-row">
+          <div class="field"><label for="f-azienda">Azienda</label><input id="f-azienda" name="azienda" placeholder="Ragione sociale" autocomplete="organization" required><span class="msg">Inserisci l'azienda</span></div>
+          <div class="field"><label for="f-citta">Città</label><input id="f-citta" name="citta" placeholder="Milano" autocomplete="address-level2" required><span class="msg">Inserisci la città</span></div>
+        </div>
         <span class="seg-label">Sei un:</span>
         <div class="segment" id="segment" role="group" aria-label="Sei un">
           <span class="seg-thumb"></span>
           <button type="button" class="active" data-val="professionista" aria-pressed="true">Professionista</button>
           <button type="button" data-val="rivenditore" aria-pressed="false">Rivenditore</button>
         </div>
+        <div class="consent">
+          <label class="consent-row" for="f-privacy">
+            <input type="checkbox" id="f-privacy" name="privacy" required>
+            <span class="consent-box" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
+            <span class="consent-text">Ho letto e accetto la <a href="#" target="_blank" rel="noopener">Privacy Policy</a> di ABC Tools</span>
+          </label>
+          <span class="msg">Per iscriverti devi accettare la Privacy Policy</span>
+        </div>
         <button type="submit" class="btn btn-primary btn-lg">Entra nel Club <span class="arrow">→</span></button>
-        <p class="form-fine">Iscrivendoti accetti la Privacy Policy di ABC Tools. Niente spam, solo cose utili.</p>
+        <p class="form-fine">Niente spam, solo cose utili. Tutti i campi sono obbligatori.</p>
       </form>
       <div class="form-success" id="formSuccess" aria-live="polite">
         <div class="ok"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>
@@ -1214,25 +1247,28 @@ segment.querySelectorAll('button').forEach((b,i)=>{
 /* ---- Form: validazione ---- */
 const form = document.getElementById('clubForm');
 function validField(input){
+  if(input.type === 'checkbox') return input.checked;   // privacy: obbligatoria
   const v = input.value.trim();
   if(input.type === 'email') return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
   return v.length > 1;
 }
+const fieldOf = input => input.closest('.field, .consent');
 form.querySelectorAll('input').forEach(input=>{
-  input.addEventListener('input', ()=>{
-    input.classList.toggle('valid', validField(input));
-    input.closest('.field').classList.remove('err');
+  const evt = input.type === 'checkbox' ? 'change' : 'input';
+  input.addEventListener(evt, ()=>{
+    if(input.type !== 'checkbox') input.classList.toggle('valid', validField(input));
+    fieldOf(input).classList.remove('err');
   });
 });
 form.addEventListener('submit', (e)=>{
   e.preventDefault();
-  let ok = true;
+  let ok = true, firstBad = null;
   form.querySelectorAll('input').forEach(input=>{
     const valid = validField(input);
-    input.closest('.field').classList.toggle('err', !valid);
-    if(!valid) ok = false;
+    fieldOf(input).classList.toggle('err', !valid);
+    if(!valid){ ok = false; firstBad = firstBad || input; }
   });
-  if(!ok) return;
+  if(!ok){ firstBad.focus(); return; }
   setTimeout(()=>{
     form.style.display = 'none';
     document.getElementById('formSuccess').classList.add('show');
