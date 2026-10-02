@@ -1055,7 +1055,8 @@ body.menu-open { overflow: hidden; }
       </div>
     </div>
     <div class="form-card reveal">
-      <form id="clubForm" novalidate>
+      <form id="clubForm" action="http://go.marketing.abctools.it/l/1065722/2026-10-01/8mr9nc" method="post" target="formTarget" novalidate>
+        <input type="hidden" name="tipo" id="f-tipo" value="professionista">
         <div class="form-row">
           <div class="field"><label for="f-nome">Nome</label><input id="f-nome" name="nome" placeholder="Mario" autocomplete="given-name" required><span class="msg">Inserisci il nome</span></div>
           <div class="field"><label for="f-cognome">Cognome</label><input id="f-cognome" name="cognome" placeholder="Rossi" autocomplete="family-name" required><span class="msg">Inserisci il cognome</span></div>
@@ -1082,6 +1083,7 @@ body.menu-open { overflow: hidden; }
         <button type="submit" class="btn btn-primary btn-lg">Entra nel Club <span class="arrow">→</span></button>
         <p class="form-fine">Niente spam, solo cose utili. Tutti i campi sono obbligatori.</p>
       </form>
+      <iframe name="formTarget" id="formTarget" title="Risposta invio modulo" hidden></iframe>
       <div class="form-success" id="formSuccess" aria-live="polite">
         <div class="ok"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>
         <h3 class="h3">Benvenuto nell'ABC Club.</h3>
@@ -1249,6 +1251,7 @@ segment.querySelectorAll('button').forEach((b,i)=>{
     b.classList.add('active'); b.setAttribute('aria-pressed','true');
     segment.classList.toggle('r1', i === 1);
     userType = b.dataset.val;
+    document.getElementById('f-tipo').value = userType;   // viaggia nel POST come campo "tipo"
   });
 });
 
@@ -1261,7 +1264,7 @@ function validField(input){
   return v.length > 1;
 }
 const fieldOf = input => input.closest('.field, .consent');
-form.querySelectorAll('input').forEach(input=>{
+form.querySelectorAll('input:not([type=hidden])').forEach(input=>{
   const evt = input.type === 'checkbox' ? 'change' : 'input';
   input.addEventListener(evt, ()=>{
     if(input.type !== 'checkbox') input.classList.toggle('valid', validField(input));
@@ -1271,16 +1274,22 @@ form.querySelectorAll('input').forEach(input=>{
 form.addEventListener('submit', (e)=>{
   e.preventDefault();
   let ok = true, firstBad = null;
-  form.querySelectorAll('input').forEach(input=>{
+  form.querySelectorAll('input:not([type=hidden])').forEach(input=>{
     const valid = validField(input);
     fieldOf(input).classList.toggle('err', !valid);
     if(!valid){ ok = false; firstBad = firstBad || input; }
   });
   if(!ok){ firstBad.focus(); return; }
-  setTimeout(()=>{
-    form.style.display = 'none';
-    document.getElementById('formSuccess').classList.add('show');
-  }, 450);
+  // Invio reale (action/method del <form>) dentro l'iframe nascosto: la pagina
+  // non cambia e, a risposta arrivata, mostriamo il messaggio di conferma.
+  submitted = true;
+  form.submit();   // submit() nativo: non rilancia questo handler
+});
+let submitted = false;
+document.getElementById('formTarget').addEventListener('load', ()=>{
+  if(!submitted) return;   // il load iniziale dell'iframe vuoto non conta
+  form.style.display = 'none';
+  document.getElementById('formSuccess').classList.add('show');
 });
 
 /* ---- Video YouTube: carica l'iframe al click ---- */
