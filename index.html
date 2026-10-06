@@ -206,7 +206,9 @@ ul { list-style: none; }
 }
 .nav-links a:hover::after { transform: scaleX(1); }
 .nav-cta { display: flex; align-items: center; gap: 24px; }
-.nav-phone { font-size: 15px; font-weight: 700; color: var(--ink-2); white-space: nowrap; }
+.nav-phone { font-size: 15px; font-weight: 700; color: var(--ink-2); white-space: nowrap; transition: color .2s var(--ease); }
+.nav-phone:hover { color: var(--orange); }
+.nav-phone:focus-visible { outline: 3px solid var(--orange); outline-offset: 3px; }
 
 /* Menu mobile */
 .nav-toggle {
@@ -471,6 +473,10 @@ body.menu-open { overflow: hidden; }
 }
 .player-meta .rec { color: var(--orange); }
 .player iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.player-fallback {
+  position: absolute; inset: 0; z-index: 2; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px;
+  padding: 24px; text-align: center; background: rgba(0, 10, 74, .88); color: var(--white); font-weight: 700;
+}
 .player.playing .player-overlay,
 .player.playing .player-progress,
 .player.playing .player-meta { display: none; }
@@ -877,7 +883,7 @@ a, button { -webkit-tap-highlight-color: rgba(242, 106, 42, .18); }
       </ul>
     </nav>
     <div class="nav-cta">
-      <span class="nav-phone">+39 02 2511 11.1</span>
+      <a class="nav-phone" href="tel:+390225111">+39 02 2511 11.1</a>
       <a href="#form" class="btn btn-dark">Entra nell'ABC Club <span class="arrow">→</span></a>
       <button class="nav-toggle" id="navToggle" aria-label="Apri il menu" aria-expanded="false" aria-controls="mobileMenu"><span></span><span></span><span></span></button>
     </div>
@@ -1179,7 +1185,7 @@ a, button { -webkit-tap-highlight-color: rgba(242, 106, 42, .18); }
           <label class="consent-row" for="f-privacy">
             <input type="checkbox" id="f-privacy" name="privacy" required>
             <span class="consent-box" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
-            <span class="consent-text">Ho letto e accetto la <a href="#" target="_blank" rel="noopener">Privacy Policy</a> di ABC Tools</span>
+            <span class="consent-text">Ho letto e accetto la <a href="https://www.iubenda.com/privacy-policy/82528194" target="_blank" rel="noopener">Privacy Policy</a> di ABC Tools</span>
           </label>
           <span class="msg">Per iscriverti devi accettare la Privacy Policy</span>
         </div>
@@ -1233,7 +1239,7 @@ a, button { -webkit-tap-highlight-color: rgba(242, 106, 42, .18); }
     </div>
     <div class="footer-bottom">
       <span>© 2026 ABC TOOLS S.p.A. — P.IVA 00717030159</span>
-      <div class="fb-right"><a href="#">Privacy</a><a href="#">Cookie</a><a href="#">Condizioni</a></div>
+      <div class="fb-right"><a href="https://www.iubenda.com/privacy-policy/82528194" target="_blank" rel="noopener">Privacy</a><a href="https://www.iubenda.com/privacy-policy/82528194/cookie-policy" target="_blank" rel="noopener">Cookie</a><a href="https://www.abctools.it/condizioni-generali-di-vendita/" target="_blank" rel="noopener">Condizioni</a></div>
     </div>
   </div>
 </footer>
@@ -1397,18 +1403,38 @@ document.getElementById('formTarget').addEventListener('load', ()=>{
 /* ---- Video YouTube: carica l'iframe al click ---- */
 const player = document.getElementById('player');
 const playBtn = player.querySelector('.play-btn');
+const watchUrl = `https://www.youtube.com/watch?v=${player.dataset.yt}`;
+/* Se l'incorporamento non è possibile (YouTube risponde "errore di configurazione
+   del video player", codice 153: succede quando la pagina è aperta da file:// e
+   quindi non invia il referrer) si mostra un tasto che apre il video su YouTube. */
+function showVideoFallback(){
+  const old = player.querySelector('iframe'); if(old) old.remove();
+  if(player.querySelector('.player-fallback')) return;
+  const fb = document.createElement('div');
+  fb.className = 'player-fallback';
+  fb.innerHTML = `<p>Il video non può essere riprodotto qui.</p><a class="btn btn-primary" href="${watchUrl}" target="_blank" rel="noopener">Guarda su YouTube <span class="arrow">→</span></a>`;
+  player.appendChild(fb);
+  player.classList.add('playing');
+}
 playBtn.addEventListener('click', ()=>{
   playBtn.style.transform = 'scale(0.9)';
   setTimeout(()=>{
+    if(!/^https?:$/.test(location.protocol)){ window.open(watchUrl, '_blank', 'noopener'); playBtn.style.transform = ''; return; }
     const iframe = document.createElement('iframe');
-    iframe.src = `https://www.youtube-nocookie.com/embed/${player.dataset.yt}?autoplay=1&rel=0&modestbranding=1`;
+    iframe.src = `https://www.youtube-nocookie.com/embed/${player.dataset.yt}?autoplay=1&rel=0&modestbranding=1&playsinline=1&enablejsapi=1&origin=${encodeURIComponent(location.origin)}`;
     iframe.title = 'ABC Stories';
     iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
     iframe.referrerPolicy = 'strict-origin-when-cross-origin';
     iframe.allowFullscreen = true;
+    iframe.addEventListener('load', ()=> iframe.contentWindow.postMessage(JSON.stringify({ event: 'listening', id: 1, channel: 'widget' }), '*'));
     player.appendChild(iframe);
     player.classList.add('playing');
   }, 160);
+});
+window.addEventListener('message', e=>{
+  if(!/youtube(-nocookie)?\.com$/.test(new URL(e.origin).hostname)) return;
+  let d; try{ d = typeof e.data === 'string' ? JSON.parse(e.data) : e.data; }catch(_){ return; }
+  if(d && d.event === 'onError') showVideoFallback();
 });
 </script>
 </body>

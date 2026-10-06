@@ -27,5 +27,5 @@ Aprire `index.html` nel browser tenendo la cartella `VI/` accanto al file: logo 
 - **Foto:** `VI/img/operaio.webp` (hero), `chiaveinglese.webp` (Chi siamo), `catalogo.png` (Catalogo). Già inserite come `<img>` nel contenitore `.media`.
 - **Video ABC Stories:** YouTube `2fOBAODJ2MA` (id in `data-yt` su `#player`), l'iframe si carica al click su Play. Aperto da `file://` YouTube può dare errore per via del referrer; online funziona normalmente.
 - **Form:** solo front-end (validazione, stato "inviato"), nessuna chiamata a un backend — va collegato a un endpoint reale. Il segmento Professionista/Rivenditore selezionato è in `userType` nello script.
-- **Link ancora segnaposto (`href="#"`):** Privacy Policy, Privacy/Cookie/Condizioni — da puntare alle pagine reali.
+- **Link legali:** Privacy e Cookie puntano alle pagine iubenda di ABC Tools, Condizioni alle condizioni generali di vendita su abctools.it.
 - **Responsive:** menu hamburger ≤1024px, card a swipe ≤720px. Hero + banda occupano sempre il 100% della viewport (misurato via JS, non solo calcolato in CSS, per restare corretto anche con lo zoom del browser o lo scaling del monitor).
