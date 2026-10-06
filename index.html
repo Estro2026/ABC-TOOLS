@@ -620,9 +620,9 @@ body.menu-open { overflow: hidden; }
    FOOTER
    ================================================================ */
 .footer { background: var(--blue); color: rgba(255, 255, 255, .78); padding: 96px 0 max(36px, env(safe-area-inset-bottom, 0px)); }
-.footer-top { display: grid; grid-template-columns: 1.6fr 1fr 1fr; gap: 56px; padding-bottom: 64px; border-bottom: 1px solid rgba(255, 255, 255, .16); }
+.footer-top { display: grid; grid-template-columns: 2.4fr 1fr 1fr; gap: 56px; padding-bottom: 64px; border-bottom: 1px solid rgba(255, 255, 255, .16); }
 .footer .logo { height: 58px; }
-.blurb { margin-top: 24px; max-width: 38ch; font-size: 15px; line-height: 1.65; }
+.blurb { margin-top: 24px; max-width: 74ch; font-size: 15px; line-height: 1.6; }
 .socials { display: flex; gap: 10px; margin-top: 28px; }
 .socials a {
   display: grid; place-items: center; width: 42px; height: 42px; border-radius: var(--radius);
@@ -773,6 +773,91 @@ body.menu-open { overflow: hidden; }
   @media (max-width: 720px) {
     .intro-visual .media, .catalog-visual .media { padding-top: 100%; } /* segue l'1/1 a piena larghezza */
   }
+}
+
+/* ================================================================
+   DESKTOP — foto "Chi siamo" alta quanto la colonna di testo
+   (dopo il box dei due tasti la colonna è più alta: la foto la segue
+   invece di restare un rettangolo fisso, a qualunque zoom/larghezza)
+   ================================================================ */
+@media (min-width: 1025px) {
+  .intro-grid { align-items: stretch; }
+  .intro-visual { display: flex; flex-direction: column; }
+  .intro-visual .media {
+    flex: 1 1 auto; aspect-ratio: auto; height: auto; padding-top: 0; min-height: 520px;
+  }
+  .intro-visual .media > img { position: absolute; inset: 0; }
+}
+
+/* ================================================================
+   TOUCH · ZOOM · BROWSER
+   ================================================================ */
+/* Niente ritardo/zoom da doppio tap su elementi interattivi, evidenziazione in tinta col brand */
+a, button, label, summary, input, .consent-row { touch-action: manipulation; }
+a, button { -webkit-tap-highlight-color: rgba(242, 106, 42, .18); }
+
+/* Righe di griglia/flex possono restringersi: niente sbordo con testi lunghi o zoom alto */
+.intro-copy, .catalog-copy, .form-copy, .hero-copy, .ch-left, .card, .form-card, .field { min-width: 0; }
+.display, .h2, .h3, .h4, .lead, .card p, .blurb, .consent-text { overflow-wrap: break-word; }
+.card p, .lead, .blurb, .consent-text { hyphens: auto; -webkit-hyphens: auto; }
+
+/* Il carosello a scorrimento non deve "tirare" la pagina in orizzontale */
+.cards { overscroll-behavior-x: contain; }
+
+/* Schermi touch: nessun hover "appiccicato" dopo il tocco */
+@media (hover: none) {
+  .card:hover { transform: none; box-shadow: none; }
+  .card:hover .c-rule { transform: scaleX(.12); }
+  .card:hover .c-icon { background: var(--blue-50); color: var(--blue); }
+  .pro .card:hover { background: rgba(255, 255, 255, .05); box-shadow: none; }
+  .pro .card:hover .c-icon { background: rgba(242, 106, 42, .16); color: var(--orange); }
+  .pro .card:first-child:hover { background: var(--orange); }
+  .business .card.is-featured:hover .c-icon { background: var(--orange); color: var(--white); }
+  .ci:hover { padding-left: 0; color: var(--blue); }
+  .nav-links a:hover::after { transform: scaleX(0); }
+  .btn:hover .arrow { transform: none; }
+  .socials a:hover { background: transparent; border-color: rgba(255, 255, 255, .3); }
+}
+
+/* Puntatore "grosso" (dito): bersagli almeno 44×44 */
+@media (pointer: coarse) {
+  .socials a { width: 48px; height: 48px; }
+  .socials { gap: 12px; }
+  .footer ul a, .fb-right a, .mm-phone, .consent-text a { display: inline-block; padding: 10px 0; min-height: 44px; }
+  .footer ul a.addr { padding: 6px 0; }
+  .nav-toggle { width: 48px; height: 48px; }
+  .nav-toggle span { right: 13px; }
+  .consent-box { width: 26px; height: 26px; }
+  .segment button { height: 50px; }
+  .pick-actions .btn, .btn { min-height: 48px; }
+}
+
+/* Schermi molto stretti o zoom altissimo (≈ 300–400%): titoli e pulsanti si adattano */
+@media (max-width: 420px) {
+  :root { --gutter: 14px; }
+  .h2 { font-size: clamp(44px, 14vw, 60px); }
+  .h3 { font-size: 34px; }
+  .btn-lg { padding: 0 18px; font-size: 14px; }
+  .pick-actions .btn, .club-foot .btn, .hero-actions .btn {
+    white-space: normal; text-align: center; height: auto; min-height: 52px; padding-top: 12px; padding-bottom: 12px; line-height: 1.25;
+  }
+  .form-card { padding: 24px 16px; }
+  .stat { grid-template-columns: 120px 1fr; }
+  .stat .num { font-size: 32px; }
+  .footer-top { grid-template-columns: 1fr; }
+  .fb-right { flex-wrap: wrap; gap: 4px 20px; }
+}
+
+/* Telefono in orizzontale (poca altezza): titolo più contenuto */
+@media (max-height: 520px) and (orientation: landscape) {
+  .mobile-menu { max-height: calc(100dvh - var(--nav-h)); }
+  .hero .display { font-size: clamp(40px, 11vh, 72px); }
+}
+
+/* Contrasto aumentato / Windows alto contrasto: bordi sempre visibili */
+@media (forced-colors: active) {
+  .btn, .consent-row, .field input, .card, .segment { border: 2px solid ButtonText; }
+  .consent-box { border-color: ButtonText; }
 }
 </style>
 </head>
@@ -1080,7 +1165,7 @@ body.menu-open { overflow: hidden; }
           <div class="field"><label for="f-nome">Nome</label><input id="f-nome" name="nome" placeholder="Mario" autocomplete="given-name" required><span class="msg">Inserisci il nome</span></div>
           <div class="field"><label for="f-cognome">Cognome</label><input id="f-cognome" name="cognome" placeholder="Rossi" autocomplete="family-name" required><span class="msg">Inserisci il cognome</span></div>
         </div>
-        <div class="field"><label for="f-email">Email</label><input id="f-email" name="email" type="email" placeholder="mario.rossi@azienda.it" autocomplete="email" required><span class="msg">Inserisci un'email valida</span></div>
+        <div class="field"><label for="f-email">Email</label><input id="f-email" name="email" type="email" inputmode="email" autocapitalize="off" spellcheck="false" enterkeyhint="next" placeholder="mario.rossi@azienda.it" autocomplete="email" required><span class="msg">Inserisci un'email valida</span></div>
         <div class="form-row">
           <div class="field"><label for="f-azienda">Azienda</label><input id="f-azienda" name="azienda" placeholder="Ragione sociale" autocomplete="organization" required><span class="msg">Inserisci l'azienda</span></div>
           <div class="field"><label for="f-citta">Città</label><input id="f-citta" name="citta" placeholder="Milano" autocomplete="address-level2" required><span class="msg">Inserisci la città</span></div>
@@ -1125,7 +1210,7 @@ body.menu-open { overflow: hidden; }
         <div class="socials">
           <a href="https://www.facebook.com/abctools1913/" target="_blank" rel="noopener" aria-label="Facebook"><svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M13.5 22v-8.2h2.8l.4-3.2h-3.2V8.5c0-.9.3-1.6 1.6-1.6h1.7V4.1c-.3 0-1.3-.1-2.5-.1-2.5 0-4.2 1.5-4.2 4.3v2.4H7.3v3.2h2.8V22h3.4z"/></svg></a>
           <a href="https://www.instagram.com/abctools1913/" target="_blank" rel="noopener" aria-label="Instagram"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4.5"/><circle cx="17.5" cy="6.5" r="1.2" fill="currentColor" stroke="none"/></svg></a>
-          <a href="https://it.linkedin.com/company/abc-tools-s-p-a-" target="_blank" rel="noopener" aria-label="LinkedIn"><svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M4.98 3.5C4.98 4.88 3.87 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1 4.98 2.12 4.98 3.5zM.5 8h4V24h-4V8zm7.5 0h3.8v2.2h.05c.53-1 1.83-2.2 3.77-2.2 4.03 0 4.78 2.65 4.78 6.1V24h-4v-7c0-1.67-.03-3.8-2.32-3.8-2.32 0-2.68 1.8-2.68 3.68V24h-4V8z"/></svg></a>
+          <a href="https://www.linkedin.com/company/abc-tools-s-p-a-?originalSubdomain=it" target="_blank" rel="noopener" aria-label="LinkedIn"><svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M4.98 3.5C4.98 4.88 3.87 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1 4.98 2.12 4.98 3.5zM.5 8h4V24h-4V8zm7.5 0h3.8v2.2h.05c.53-1 1.83-2.2 3.77-2.2 4.03 0 4.78 2.65 4.78 6.1V24h-4v-7c0-1.67-.03-3.8-2.32-3.8-2.32 0-2.68 1.8-2.68 3.68V24h-4V8z"/></svg></a>
           <a href="https://www.youtube.com/channel/UC1O-GSzC66seYABho6a2gQg" target="_blank" rel="noopener" aria-label="YouTube"><svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M23 7.5a3 3 0 0 0-2.1-2.1C19 5 12 5 12 5s-7 0-8.9.4A3 3 0 0 0 1 7.5 31 31 0 0 0 .6 12 31 31 0 0 0 1 16.5a3 3 0 0 0 2.1 2.1C5 19 12 19 12 19s7 0 8.9-.4a3 3 0 0 0 2.1-2.1A31 31 0 0 0 23.4 12 31 31 0 0 0 23 7.5zM9.8 15.3V8.7l5.7 3.3z"/></svg></a>
         </div>
       </div>
