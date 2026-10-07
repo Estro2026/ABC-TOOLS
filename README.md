@@ -7,7 +7,6 @@ Mockup della landing page "Entra nell'ABC Club", pronto per lo sviluppo.
 | File | Contenuto |
 | --- | --- |
 | `index.html` | Mockup UI definitivo (HTML/CSS/JS in un unico file) — online su https://estro2026.github.io/ABC-TOOLS/ |
-| `ABC Club Landing (standalone).html` | Wireframe di partenza (solo per riferimento, non serve per lo sviluppo) |
 | `VI/img/` | Le tre foto usate nel mockup (hero, "Chi siamo", catalogo) |
 | `VI/Logo/webp/` | Logo in uso nel mockup (Dark su fondi chiari, Light su fondi scuri) |
 | `VI/Logo/svg` `/png` `/pdf` | Stesso logo in altri formati (vettoriale/stampa), non richiesti dal mockup |
