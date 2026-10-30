@@ -1153,6 +1153,8 @@ a, button { -webkit-tap-highlight-color: rgba(242, 106, 42, .18); }
     <div class="form-card reveal">
       <form id="clubForm" action="https://go.marketing.abctools.it/l/1065722/2026-10-01/8mr9nc" method="post" target="formTarget" novalidate>
         <input type="hidden" name="tipo" id="f-tipo" value="professionista">
+        <!-- Paese: nascosto, default IT — il valore viene poi mappato da Account Engagement (Pardot) -->
+        <input type="hidden" name="paese" id="f-paese" value="IT">
         <div class="form-row">
           <div class="field"><label for="f-nome">Nome</label><input id="f-nome" name="nome" placeholder="Mario" autocomplete="given-name" required><span class="msg">Inserisci il nome</span></div>
           <div class="field"><label for="f-cognome">Cognome</label><input id="f-cognome" name="cognome" placeholder="Rossi" autocomplete="family-name" required><span class="msg">Inserisci il cognome</span></div>
@@ -1161,6 +1163,10 @@ a, button { -webkit-tap-highlight-color: rgba(242, 106, 42, .18); }
         <div class="form-row">
           <div class="field"><label for="f-azienda">Azienda</label><input id="f-azienda" name="azienda" placeholder="Ragione sociale" autocomplete="organization" required><span class="msg">Inserisci l'azienda</span></div>
           <div class="field"><label for="f-citta">Città</label><input id="f-citta" name="citta" placeholder="Milano" autocomplete="address-level2" required><span class="msg">Inserisci la città</span></div>
+        </div>
+        <div class="form-row">
+          <div class="field"><label for="f-cap">CAP</label><input id="f-cap" name="cap" inputmode="numeric" pattern="[0-9]{5}" maxlength="5" enterkeyhint="next" placeholder="20093" autocomplete="postal-code" required><span class="msg">Inserisci un CAP valido (5 cifre)</span></div>
+          <div class="field"><label for="f-provincia">Provincia</label><input id="f-provincia" name="provincia" maxlength="30" autocapitalize="characters" placeholder="MI" autocomplete="address-level1" required><span class="msg">Inserisci la provincia</span></div>
         </div>
         <span class="seg-label">Sei un:</span>
         <div class="segment" id="segment" role="group" aria-label="Sei un">
@@ -1356,6 +1362,7 @@ function validField(input){
   if(input.type === 'checkbox') return input.checked;   // privacy: obbligatoria
   const v = input.value.trim();
   if(input.type === 'email') return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+  if(input.name === 'cap') return /^\d{5}$/.test(v);   // CAP italiano: 5 cifre
   return v.length > 1;
 }
 const fieldOf = input => input.closest('.field, .consent');
