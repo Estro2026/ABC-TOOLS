@@ -553,6 +553,7 @@ body.menu-open { overflow: hidden; }
   background: var(--white) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23001489' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") no-repeat right 16px center;
   transition: border-color .2s var(--ease), box-shadow .2s var(--ease);
 }
+.field select { text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
 .field select:invalid { color: #A3A7C0; }              /* "Seleziona" in tono segnaposto */
 .field select option { color: var(--ink); }
 .field select:hover { border-color: #B9BED6; }
@@ -801,7 +802,7 @@ body.menu-open { overflow: hidden; }
    TOUCH · ZOOM · BROWSER
    ================================================================ */
 /* Niente ritardo/zoom da doppio tap su elementi interattivi, evidenziazione in tinta col brand */
-a, button, label, summary, input, .consent-row { touch-action: manipulation; }
+a, button, label, summary, input, select, .consent-row { touch-action: manipulation; }
 a, button { -webkit-tap-highlight-color: rgba(242, 106, 42, .18); }
 
 /* Righe di griglia/flex possono restringersi: niente sbordo con testi lunghi o zoom alto */
@@ -837,6 +838,8 @@ a, button { -webkit-tap-highlight-color: rgba(242, 106, 42, .18); }
   .consent-box { width: 26px; height: 26px; }
   .segment button { height: 50px; }
   .pick-actions .btn, .btn { min-height: 48px; }
+  /* tendina: bersaglio ≥ 48px; 16px evita lo zoom automatico di iOS al tocco */
+  .field select, .field input { min-height: 52px; font-size: 16px; }
 }
 
 /* Schermi molto stretti o zoom altissimo (≈ 300–400%): titoli e pulsanti si adattano */
@@ -849,6 +852,7 @@ a, button { -webkit-tap-highlight-color: rgba(242, 106, 42, .18); }
     white-space: normal; text-align: center; height: auto; min-height: 52px; padding-top: 12px; padding-bottom: 12px; line-height: 1.25;
   }
   .form-card { padding: 24px 16px; }
+  .field select { padding: 0 40px 0 14px; background-position: right 14px center; }
   .stat { grid-template-columns: 120px 1fr; }
   .stat .num { font-size: 32px; }
   .footer-top { grid-template-columns: 1fr; }
@@ -863,7 +867,8 @@ a, button { -webkit-tap-highlight-color: rgba(242, 106, 42, .18); }
 
 /* Contrasto aumentato / Windows alto contrasto: bordi sempre visibili */
 @media (forced-colors: active) {
-  .btn, .consent-row, .field input, .card, .segment { border: 2px solid ButtonText; }
+  .btn, .consent-row, .field input, .field select, .card, .segment { border: 2px solid ButtonText; }
+  .field select { -webkit-appearance: auto; appearance: auto; }   /* senza immagini di sfondo serve la freccia nativa */
   .consent-box { border-color: ButtonText; }
 }
 </style>
